@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/pastry-personal5/tt-apiserver/internal/config"
+	"github.com/pastry-personal5/tt-apiserver/internal/models"
 	"github.com/pastry-personal5/tt-apiserver/internal/routers"
 	"gopkg.in/yaml.v3"
 )
@@ -31,7 +32,7 @@ func main() {
 	fmt.Printf("Starting %v...\n", applicationName)
 	config.ConnectDB(global_config)
 	// Migrate the User model
-	//config.DB.AutoMigrate(&models.ExpenseTransaction{})
+	config.DB.AutoMigrate(&models.ExpenseTransaction{})
 
 	r := routers.SetupRouter()
 

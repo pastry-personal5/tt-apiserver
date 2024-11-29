@@ -13,5 +13,9 @@ type ExpenseTransaction struct {
 	SourceAccount       string `json:"source_account"`
 	TargetAccount       string `json:"target_account"`
 	TransactionDatetime string `json:"transaction_datetime"`
-	TransactionID       int    `json:"transaction_id" gorm:"primaryKey"`
+}
+
+type ExpenseTransactionResponse struct {
+	Data  []ExpenseTransaction `json:"data"`
+	Total int64                `json:"total"`
 }
