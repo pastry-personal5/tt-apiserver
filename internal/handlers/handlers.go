@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pastry-personal5/tt-apiserver/internal/config"
 	"github.com/pastry-personal5/tt-apiserver/internal/models"
+	"github.com/pastry-personal5/tt-apiserver/internal/services"
 	"gorm.io/gorm"
 )
 
@@ -35,11 +35,11 @@ func GetExpenseTransactions(c *gin.Context) {
 	var response models.ExpenseTransactionResponse
 	paramPage := c.DefaultQuery("page", "1")
 	paramPageSize := c.DefaultQuery("page_size", "100")
-	config.DB.Unscoped().Scopes(Paginate(paramPage, paramPageSize)).Order("transaction_datetime asc").Find(&transactions)
+	services.DB.Unscoped().Scopes(Paginate(paramPage, paramPageSize)).Order("transaction_datetime asc").Find(&transactions)
 	response.Data = transactions
 
 	var total int64
-	config.DB.Table("expense_transactions").Count(&total)
+	services.DB.Table("expense_transactions").Count(&total)
 	response.Total = total
 
 	c.IndentedJSON(http.StatusOK, response)
@@ -49,7 +49,7 @@ func UpdateExpenseTransaction(c *gin.Context) {
 	id := c.Param("id")
 	id_as_int, _ := strconv.Atoi(id)
 	var t models.ExpenseTransaction
-	db := config.DB
+	db := services.DB
 	if err := db.Unscoped().First(&t, id_as_int).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Expense transaction not found"})
 		return

@@ -12,6 +12,7 @@ import (
 	"github.com/pastry-personal5/tt-apiserver/internal/config"
 	"github.com/pastry-personal5/tt-apiserver/internal/models"
 	"github.com/pastry-personal5/tt-apiserver/internal/routers"
+	"github.com/pastry-personal5/tt-apiserver/internal/services"
 	"gopkg.in/yaml.v3"
 )
 
@@ -65,9 +66,9 @@ func loadGlobalConfigFilePathAndServerPort() (string, string) {
 
 func initializeDBConnection(globalConfig *config.GlobalConfig) {
 
-	config.ConnectDB(*globalConfig)
+	services.ConnectDB(*globalConfig)
 	// Migrate the User model
-	config.DB.AutoMigrate(&models.ExpenseTransaction{})
+	services.DB.AutoMigrate(&models.ExpenseTransaction{})
 }
 
 func startServerAndRunLoop(serverPortWithColonPrefixed string) {
