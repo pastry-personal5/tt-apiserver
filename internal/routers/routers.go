@@ -30,7 +30,7 @@ func SetupRouter() *gin.Engine {
 	expenseTransactionRoutes := r.Group("/expense_transactions/")
 	{
 		expenseTransactionRoutes.GET("", handlers.GetExpenseTransactions)
-		expenseTransactionRoutes.POST(":transaction_id", handlers.UpdateExpenseTransaction)
+		expenseTransactionRoutes.POST(":id", handlers.UpdateExpenseTransaction)
 	}
 
 	return r

@@ -46,11 +46,11 @@ func GetExpenseTransactions(c *gin.Context) {
 }
 
 func UpdateExpenseTransaction(c *gin.Context) {
-	transaction_id := c.Param("transaction_id")
-	transaction_id_as_int, _ := strconv.Atoi(transaction_id)
+	id := c.Param("id")
+	id_as_int, _ := strconv.Atoi(id)
 	var t models.ExpenseTransaction
 	db := config.DB
-	if err := db.Unscoped().First(&t, transaction_id_as_int).Error; err != nil {
+	if err := db.Unscoped().First(&t, id_as_int).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Expense transaction not found"})
 		return
 	}
