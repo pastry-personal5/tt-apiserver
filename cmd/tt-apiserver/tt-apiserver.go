@@ -69,6 +69,7 @@ func initializeDBConnection(globalConfig *config.GlobalConfig) {
 	services.ConnectDB(*globalConfig)
 	// Migrate the User model
 	services.DB.AutoMigrate(&models.ExpenseTransaction{})
+	services.DB.AutoMigrate(&models.ExpenseCategories{})
 }
 
 func startServerAndRunLoop(serverPortWithColonPrefixed string) {

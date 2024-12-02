@@ -35,7 +35,8 @@ func GetExpenseTransactions(c *gin.Context) {
 	var response models.ExpenseTransactionResponse
 	paramPage := c.DefaultQuery("page", "1")
 	paramPageSize := c.DefaultQuery("page_size", "100")
-	services.DB.Unscoped().Scopes(Paginate(paramPage, paramPageSize)).Order("transaction_datetime asc").Find(&transactions)
+	tableName := "expense_transactions"
+	services.DB.Table(tableName).Unscoped().Scopes(Paginate(paramPage, paramPageSize)).Order("transaction_datetime asc").Find(&transactions)
 	response.Data = transactions
 
 	var total int64
@@ -75,4 +76,43 @@ func UpdateExpenseTransaction(c *gin.Context) {
 	db.Save(&t)
 
 	c.JSON(http.StatusOK, t)
+}
+
+func GetExpenseTransactionsMonthlyAnalysis(c *gin.Context) {
+	var t []models.ExpenseTransactionMonthlyAnalysis
+	var response models.ExpenseTransactionMonthlyAnalysisResponse
+	paramPage := c.DefaultQuery("page", "1")
+	paramPageSize := c.DefaultQuery("page_size", "100")
+	userIdentifier := c.DefaultQuery("user_identifier", "user1")
+	tableName := "expense_transactions_monthly_analysis"
+	services.DB.Table(tableName).Unscoped().Scopes(Paginate(paramPage, paramPageSize)).Order("month, category0 asc").Find(&t, "user_identifier = ?", userIdentifier)
+	response.Data = t
+
+	var total int64
+	services.DB.Table("expense_transactions_monthly_analysis").Count(&total)
+	response.Total = total
+
+	c.IndentedJSON(http.StatusOK, response)
+}
+
+func GetExpenseTransactionsMonthlyAnalysisForCountOfDistinctMonths(c *gin.Context) {
+	var t []models.ExpenseTransactionMonthlyAnalysis
+	tableName := "expense_transactions_monthly_analysis"
+	userIdentifier := c.DefaultQuery("user_identifier", "user1")
+	services.DB.Table(tableName).Unscoped().Distinct("month").Find(&t, "user_identifier = ?", userIdentifier)
+	var response models.ExpenseTransactionMonthlyAnalysisForCountOfDistinctMonthsResponse
+	response.UserIdentifier = userIdentifier
+	response.Total = len(t)
+	c.IndentedJSON(http.StatusOK, response)
+}
+
+func GetExpenseCategoriesForCountOfDistinctNames(c *gin.Context) {
+	var t []models.ExpenseCategories
+	tableName := "expense_categories"
+	userIdentifier := c.DefaultQuery("user_identifier", "user1")
+	services.DB.Table(tableName).Unscoped().Distinct("name").Find(&t, "user_identifier = ?", userIdentifier)
+	var response models.ExpenseCategoriesForCountOfDistinctNamesResponse
+	response.UserIdentifier = userIdentifier
+	response.Total = len(t)
+	c.IndentedJSON(http.StatusOK, response)
 }
